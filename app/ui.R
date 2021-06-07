@@ -2,6 +2,11 @@ library(shiny)
 library(shinydashboard)
 library(plotly)
 library(DT)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(tsibble)
+library(fable)
 
 ui <- dashboardPage(
   title = ,
@@ -14,7 +19,7 @@ ui <- dashboardPage(
       placeholder = "Symbol of your stock",
       value = "VCB"
     ),
-    dateRangeInput("stock_date", label = "Period", start = today() - 10),
+    dateRangeInput("stock_date", label = "Period", start = today() - 30),
     selectInput("model", "Forecast model", choices = c("ETS", "ARIMA")),
     numericInput("forecast_h", "Forecast time", value = 10),
     hr(),
@@ -31,4 +36,7 @@ ui <- dashboardPage(
 
 
 
-shinyApp(ui, server)
+
+
+
+

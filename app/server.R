@@ -3,12 +3,19 @@ library(shinydashboard)
 library(plotly)
 library(DT)
 library(here)
+library(tidyverse)
+library(lubridate)
+library(tsibble)
+library(fable)
 i_am("app/server.R")
 
 source(here("R/get-vndirect.R"))
+source(here("R/forecast_ARIMA_plotly.R"))
+## make get_stock fall back as a tibble
 get_stock <- purrr::possibly(get_stock, tibble())
 
-###### server side
+###### SERVER
+
 server <- function(input, output, session) {
 
 # get stock data ----------------------------------------------------------
@@ -19,17 +26,12 @@ stock_data <- reactive({
     end_date = input$stock_date[2]
   )
 })
-observeEvent(input$symbol, {print(stock_data())})
 
 
 # output ------------------------------------------------------------------
+#1 Plot stock price and forecast
 output$plot1 <- renderPlotly({
-  (stock_data() %>%
-     ggplot(aes(date, close))+
-     geom_point()+
-     geom_line()+
-     theme_minimal()) %>%
-    ggplotly()
+    forecast_ARIMA_plotly(stock_data(), h = input$forecast_h)
 })
 
 output$table1 <- renderDataTable({
