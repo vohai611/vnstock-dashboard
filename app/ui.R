@@ -12,7 +12,7 @@ ui <- dashboardPage(
   title = ,
   dashboardHeader(),
   dashboardSidebar(
-    width = 300,
+    width = 250,
     textInput(
       "symbol",
       "Choose stock",
@@ -25,18 +25,17 @@ ui <- dashboardPage(
     hr(),
     fluidRow(column(width = 1), submitButton("Get!"))
   ),
-  dashboardBody(fluidPage(tabBox(width = 660, height = "400px",
-                                 tabPanel("Stock chart", plotlyOutput("plot1")),
-                                 tabPanel("Data on table", DTOutput("table1")))))
+  dashboardBody(
+    fluidRow(
+    tabBox(
+      width = 660,
+      height = "400px",
+      tabPanel("Stock chart", plotlyOutput("plot1")),
+      tabPanel("Model report", verbatimTextOutput("model_report")),
+      tabPanel("Forecast data", DTOutput("forecast_table")),
+      tabPanel("Raw data", DTOutput("table1"))
 
-
-
+    )
+  ))
 
 )
-
-
-
-
-
-
-

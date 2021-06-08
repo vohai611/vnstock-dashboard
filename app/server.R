@@ -10,7 +10,7 @@ library(fable)
 i_am("app/server.R")
 
 source(here("R/get-vndirect.R"))
-source(here("R/forecast_ARIMA_plotly.R"))
+source(here("R/forecast_plotly.R"))
 ## make get_stock fall back as a tibble
 get_stock <- purrr::possibly(get_stock, tibble())
 
@@ -30,8 +30,31 @@ stock_data <- reactive({
 
 # output ------------------------------------------------------------------
 #1 Plot stock price and forecast
+## fit model (ETS or ARIMA)
+
+model <- reactive({
+  model_forcast(stock_data(), model = input$model)
+})
+
 output$plot1 <- renderPlotly({
-    forecast_ARIMA_plotly(stock_data(), h = input$forecast_h)
+
+
+  forecast_plotly(stock_data(), model(), h = input$forecast_h)
+
+  })
+#2 model report
+output$model_report <- renderPrint({
+  model() %>%
+    report()
+})
+
+#3 forecast data on table
+output$forecast_table <- renderDataTable({
+  model() %>%
+    forecast(h = input$forecast_h) %>%
+    as_tibble() %>%
+    select(day, forecast = .mean) %>%
+    datatable()
 })
 
 output$table1 <- renderDataTable({
